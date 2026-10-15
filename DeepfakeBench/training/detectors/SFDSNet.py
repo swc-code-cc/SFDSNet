@@ -552,15 +552,14 @@ class SFDSNet(nn.Module):
 
     def forward(self, data_dict: dict, inference=False) -> dict:
         # get the features by backbone
-        features = self.features(data_dict) 
+        feats = self.features(data_dict) 
             # 2. 随机 batch 内 SSI（可选）
         if self.training and getattr(self, 'use_SSI_random', False):
-            features = self.SSI_random_batch(features)
+            feats = self.SSI_random_batch(features)
 
         # 2. 类内 SSI（可选）
         if self.training and getattr(self, 'use_SSI_classwise', False):
-            features = self.SSI_classwise(data_dict, features)
-        feats = self.features(data_dict)
+            feats = self.SSI_classwise(data_dict, features)
 
         pooler_output = feats['pooler_output']           # [B, 1024]
         last_hidden_state = feats['last_hidden_state']   # [B, N+1, 1024]
